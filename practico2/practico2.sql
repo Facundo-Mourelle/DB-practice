@@ -92,3 +92,7 @@ OR IndepYear = 0;
 SELECT Language, Percentage 
 FROM countrylanguage 
 WHERE IsOfficial = "T"; 
+-- 6
+UPDATE countrylanguage 
+SET Percentage = 100 
+WHERE CountryCode="AIA";
