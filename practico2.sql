@@ -67,3 +67,14 @@ INSERT INTO continent VALUES ('South America', 17840000, 12.0,206);
 ALTER TABLE country
 ADD CONSTRAINT fk_country_continent
 FOREIGN KEY (Continent) REFERENCES continent(ContinentName);
+
+-- Queries
+-- 1
+SELECT Name, Region 
+FROM country 
+ORDER BY Name ASC;
+-- 2
+SELECT Name, Population 
+FROM city 
+ORDER BY Population DESC
+LIMIT 10;
