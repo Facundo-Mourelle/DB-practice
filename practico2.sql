@@ -1,3 +1,8 @@
+-- Clean start
+DROP DATABASE IF EXISTS world;
+CREATE DATABASE IF NOT EXISTS world;
+
+-- Scheme
 CREATE TABLE IF NOT EXISTS country(
 	Code VARCHAR(150) PRIMARY KEY,
 	Name VARCHAR(150),
@@ -37,8 +42,6 @@ CREATE TABLE IF NOT EXISTS countrylanguage (
 )
 ENGINE=InnoDB;
 
-source ~/Downloads/world-data.sql;
-
 CREATE TABLE IF NOT EXISTS continent (
 	ContinentName VARCHAR(150) NOT NULL PRIMARY KEY,
 	Area INT,
@@ -46,6 +49,10 @@ CREATE TABLE IF NOT EXISTS continent (
 	MostPopulousCity INT
 )
 ENGINE=InnoDB;
+-- End of Scheme
+
+-- Populate
+source ./world-data.sql;
 
 INSERT INTO continent VALUES ('Africa', 30370000, 20.4, 608);
 INSERT INTO continent VALUES ('Antarctica', 14000000, 9.2, 4080);
@@ -54,9 +61,9 @@ INSERT INTO continent VALUES ('Europe',10180000, 6.8,3357);
 INSERT INTO continent VALUES ('North America', 24709000, 16.5, 2515);
 INSERT INTO continent VALUES ('Oceania',8600000, 5.9,130);
 INSERT INTO continent VALUES ('South America', 17840000, 12.0,206);
+-- End of Populate
 
 -- Punto 6
 ALTER TABLE country
 ADD CONSTRAINT fk_country_continent
 FOREIGN KEY (Continent) REFERENCES continent(ContinentName);
-
