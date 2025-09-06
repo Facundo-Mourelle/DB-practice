@@ -108,3 +108,9 @@ AND CountryCode!="ARG";
 SELECT Name, HeadOfState 
 FROM country 
 WHERE HeadOfState LIKE "%John%";
+-- 10
+SELECT Name, Population 
+FROM country 
+WHERE Population > 35000000 
+AND Population < 45000000 
+ORDER BY Population ASC;
