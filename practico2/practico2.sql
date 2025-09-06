@@ -114,3 +114,11 @@ FROM country
 WHERE Population > 35000000 
 AND Population < 45000000 
 ORDER BY Population ASC;
+-- 11
+/*
+Country.continent ya existe en Continent.name
+Country.code2 es menos descriptivo que Country.code pero significan lo mismo
+Country.population es derivable de sumar todos los City.population
+Continent.mostPopulousCity es derivable de City.population accediendo desde Country
+Country.GNPOld es un valor historico de GNP, limitado a solo 1. Se podria crear una entidad aparte para acceder e incluir informacion relacionada
+*/
