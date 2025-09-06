@@ -87,7 +87,6 @@ LIMIT 10;
 SELECT name 
 FROM country 
 WHERE IndepYear IS NULL 
-OR IndepYear = 0;
 -- 5
 SELECT Language, Percentage 
 FROM countrylanguage 
@@ -96,3 +95,8 @@ WHERE IsOfficial = "T";
 UPDATE countrylanguage 
 SET Percentage = 100 
 WHERE CountryCode="AIA";
+-- 7
+SELECT Name 
+FROM city 
+WHERE District="Cordoba" 
+AND CountryCode="ARG";
