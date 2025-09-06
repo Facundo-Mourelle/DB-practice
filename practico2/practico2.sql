@@ -86,7 +86,7 @@ LIMIT 10;
 -- 4
 SELECT name 
 FROM country 
-WHERE IndepYear IS NULL 
+WHERE IndepYear IS NULL;
 -- 5
 SELECT Language, Percentage 
 FROM countrylanguage 
@@ -104,3 +104,7 @@ AND CountryCode="ARG";
 DELETE FROM city 
 WHERE District="Cordoba" 
 AND CountryCode!="ARG";
+-- 9
+SELECT Name, HeadOfState 
+FROM country 
+WHERE HeadOfState LIKE "%John%";
