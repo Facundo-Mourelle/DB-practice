@@ -88,3 +88,7 @@ SELECT name
 FROM country 
 WHERE IndepYear IS NULL 
 OR IndepYear = 0;
+-- 5
+SELECT Language, Percentage 
+FROM countrylanguage 
+WHERE IsOfficial = "T"; 
