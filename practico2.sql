@@ -83,3 +83,8 @@ SELECT Name, Region, SurfaceArea, GovernmentForm
 FROM country
 ORDER BY SurfaceArea ASC
 LIMIT 10;
+-- 4
+SELECT name 
+FROM country 
+WHERE IndepYear IS NULL 
+OR IndepYear = 0;
