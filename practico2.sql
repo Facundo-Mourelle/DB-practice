@@ -78,3 +78,8 @@ SELECT Name, Population
 FROM city 
 ORDER BY Population DESC
 LIMIT 10;
+-- 3
+SELECT Name, Region, SurfaceArea, GovernmentForm
+FROM country
+ORDER BY SurfaceArea ASC
+LIMIT 10;
