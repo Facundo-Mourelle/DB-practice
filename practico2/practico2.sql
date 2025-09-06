@@ -100,3 +100,7 @@ SELECT Name
 FROM city 
 WHERE District="Cordoba" 
 AND CountryCode="ARG";
+-- 8
+DELETE FROM city 
+WHERE District="Cordoba" 
+AND CountryCode!="ARG";
