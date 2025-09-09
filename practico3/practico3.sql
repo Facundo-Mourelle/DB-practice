@@ -13,11 +13,11 @@ LIMIT 10;
 
 -- Ejercicio 2
 
-SELECT
-co.Name AS CountryName,
-ci.Name AS CityName
-FROM city ci
-JOIN country co
-ON (co.Capital = ci.ID)
-ORDER BY co.Population ASC
+SELECT 
+co.Name AS CountryName, 
+ci.Name AS CityName 
+FROM country co 
+LEFT JOIN city ci 
+ON (co.Capital = ci.ID) 
+ORDER BY co.Population ASC 
 LIMIT 10;
