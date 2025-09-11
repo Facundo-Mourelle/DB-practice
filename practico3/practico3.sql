@@ -43,3 +43,16 @@ LEFT JOIN city ci
 ON (co.Capital = ci.ID) 
 ORDER BY co.SurfaceArea DESC 
 LIMIT 20;
+
+-- Ejercicio 5
+
+SELECT 
+ci.Name AS City, 
+la.language AS OfficialLanguage, 
+ci.Population AS CityPopulation, 
+la.Percentage AS LanguagePercentage 
+FROM city ci 
+INNER JOIN country co ON ci.CountryCode = co.Code 
+INNER JOIN countrylanguage la ON co.Code = la.CountryCode 
+WHERE la.IsOfficial = "T" 
+ORDER BY (ci.Population) DESC, (la.Percentage) DESC;
