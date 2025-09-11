@@ -32,3 +32,14 @@ FROM countrylanguage la
 INNER JOIN country co 
 ON (co.Code = la.CountryCode) 
 WHERE (la.IsOfficial = "T");
+
+-- Ejercicio 4
+
+SELECT 
+co.Name as Country, 
+ci.Name as City 
+FROM country co 
+LEFT JOIN city ci 
+ON (co.Capital = ci.ID) 
+ORDER BY co.SurfaceArea DESC 
+LIMIT 20;
