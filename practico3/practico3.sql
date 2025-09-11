@@ -56,3 +56,21 @@ INNER JOIN country co ON ci.CountryCode = co.Code
 INNER JOIN countrylanguage la ON co.Code = la.CountryCode 
 WHERE la.IsOfficial = "T" 
 ORDER BY (ci.Population) DESC, (la.Percentage) DESC;
+
+-- Ejercicio 6
+
+(
+SELECT Name, Population 
+FROM country 
+WHERE country.Population > 100 
+ORDER BY country.Population DESC 
+LIMIT 10
+)
+UNION ALL
+(
+SELECT Name, Population 
+FROM country 
+WHERE country.Population > 100 
+ORDER BY country.Population ASC 
+LIMIT 10
+);
