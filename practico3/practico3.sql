@@ -74,3 +74,25 @@ WHERE country.Population > 100
 ORDER BY country.Population ASC 
 LIMIT 10
 );
+
+-- Ejercicio 7
+
+(
+SELECT 
+co.Name, 
+la.Language 
+FROM country co 
+INNER JOIN countrylanguage la 
+ON (co.Code = la.CountryCode) 
+WHERE la.Language = "English"
+)
+UNION
+(
+SELECT 
+co.Name, 
+la.Language 
+FROM country co 
+INNER JOIN countrylanguage la 
+ON (co.Code = la.CountryCode) 
+WHERE la.Language = "French"
+);
