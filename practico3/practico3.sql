@@ -115,3 +115,27 @@ AND NOT EXISTS (
     AND la.Language = "Spanish"
     AND la.Percentage > 0
 );
+
+-- PARTE 2
+
+-- Ejercicio 1
+/*
+Si devuelven los mismos valores puesto que en ambos se seleccionan las filas
+usando INNER JOIN lo que descarta las filas entre ambas tablas que poseen
+valores que no "matchean" o que tienen valores nulos establecidos por la condicion del ON.
+Gracias a esto se puede utilizar AND para filtrar aun mas por la condicion del ON
+
+En el segundo se usa WHERE que descarta tambien las filas que no coinciden con la
+condicion establecida, por lo que primero se filtra por la condicion del ON, y luego
+se descartan por el filtro establecido en WHERE
+*/
+
+-- Ejercicio 2
+/*
+Usar LEFT JOIN en el caso 1 no seria lo mismo ya que no estariamos seleccionando unicamente
+las filas con valores no-nulos, por lo que para los country.Name que no sean "Argentina"
+tendriamos el valor NULL
+
+Para el caso 2 con WHERE si se podria usar LEFT JOIN ya que elimina las filas que no coinciden
+con la condicion establecida.
+*/
