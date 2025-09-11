@@ -96,3 +96,22 @@ INNER JOIN countrylanguage la
 ON (co.Code = la.CountryCode) 
 WHERE la.Language = "French"
 );
+
+-- Ejercicio 8
+
+SELECT co.Name 
+FROM country co 
+WHERE EXISTS (
+    SELECT 1 
+    FROM countrylanguage la 
+    WHERE la.CountryCode = co.Code 
+    AND la.Language = "English" 
+    AND la.Percentage > 0
+)
+AND NOT EXISTS (
+    SELECT 1 
+    FROM countrylanguage la 
+    WHERE la.CountryCode = co.Code 
+    AND la.Language = "Spanish"
+    AND la.Percentage > 0
+);
