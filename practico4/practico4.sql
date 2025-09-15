@@ -58,3 +58,25 @@ AND l.Percentage > ALL (
     AND IsOfficial = "T"
 );
 
+-- Ejercicio 5
+/*
+Listar (sin duplicados) aquellas regiones que tengan países con una superficie menor a 1000 km2 y exista (en el país) al menos una ciudad con más de 100000 habitantes. (Hint: Esto puede resolverse con o sin una subquery, intenten encontrar ambas respuestas).
+*/
+
+SELECT DISTINCT c.Region 
+FROM country c 
+WHERE c.SurfaceArea < 1000 
+AND EXISTS (
+    SELECT 1
+    FROM city ci 
+    WHERE c.Code = ci.CountryCode 
+    AND ci.Population > 100000
+);
+
+SELECT c.Region 
+FROM country c 
+JOIN city ci 
+ON ci.CountryCode = c.Code 
+WHERE c.SurfaceArea < 1000 
+GROUP BY c.Region 
+HAVING MAX(ci.Population) > 100000;
