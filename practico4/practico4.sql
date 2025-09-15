@@ -35,14 +35,26 @@ WHERE Population >= SOME (
     FROM country 
     WHERE Continent = "Asia" 
     )
-AND c.CountryCode NOT IN (
+AND c.CountryCode IN (
     SELECT Code
     FROM country 
-    WHERE Continent LIKE "Asia"
+    WHERE Continent NOT LIKE "Asia"
 );
 
 -- Ejercicio 4
 /*
 Listar aquellos países junto a sus idiomas no oficiales, que superen en porcentaje de hablantes a cada uno de los idiomas oficiales del país.
 */
+
+SELECT c.Name, l.Language 
+FROM country c 
+INNER JOIN countrylanguage l 
+ON c.Code = l.CountryCode 
+WHERE l.IsOfficial NOT LIKE "T"
+AND l.Percentage > ALL (
+    SELECT l2.Percentage 
+    FROM countrylanguage l2 
+    WHERE l2.CountryCode = c.Code 
+    AND IsOfficial = "T"
+);
 
