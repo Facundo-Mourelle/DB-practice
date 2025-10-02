@@ -142,3 +142,17 @@ SELECT Continent, AVG(LifeExpectancy) AS avg_life
 FROM country 
 GROUP BY Continent 
 HAVING AVG(LifeExpectancy) BETWEEN 40 AND 70;
+
+-- Ejercicio 10
+
+/*
+Listar la cantidad máxima, mínima, promedio y suma de habitantes por continente.
+*/
+
+SELECT Continent,
+    MAX(Population) AS max_pop,
+    MIN(Population) AS min_pop,
+    AVG(Population) AS avg_pop,
+    SUM(Population) AS total_pop 
+FROM country 
+GROUP BY Continent;
