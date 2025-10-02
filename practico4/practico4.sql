@@ -124,4 +124,10 @@ AND cl.Percentage > (
 Listar la cantidad de habitantes por continente ordenado en forma descendente.
 */
 
-
+SELECT co.ContinentName, (SELECT sum(Population) 
+    FROM country c 
+    WHERE c.Continent = co.ContinentName 
+    ) AS pop 
+FROM continent co 
+GROUP BY co.ContinentName 
+ORDER BY pop desc;
