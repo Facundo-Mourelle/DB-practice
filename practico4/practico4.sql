@@ -80,3 +80,48 @@ ON ci.CountryCode = c.Code
 WHERE c.SurfaceArea < 1000 
 GROUP BY c.Region 
 HAVING MAX(ci.Population) > 100000;
+
+-- Ejercicio 6
+/*
+Listar el nombre de cada país con la cantidad de habitantes de su ciudad más poblada. (Hint: Hay dos maneras de llegar al mismo resultado. Usando consultas escalares o usando agrupaciones, encontrar ambas).
+*/
+
+-- Consulta escalar
+SELECT c.name, 
+    (SELECT max(Population)
+    FROM city ci 
+    WHERE c.Code = ci.CountryCode
+    ) AS max_pop 
+FROM country c;
+
+-- Agregacion
+SELECT co.name, MAX(ci.Population) AS max_pop 
+FROM country co 
+JOIN city ci ON co.Code = ci.CountryCode 
+GROUP BY co.Code, co.name;
+-- BUG: Si country no tiene una fila city no se muestra (por JOIN + GROUP BY)
+
+-- Ejercicio 7
+
+/*
+Listar aquellos países y sus lenguajes no oficiales cuyo porcentaje de hablantes sea mayor al promedio de hablantes de los lenguajes oficiales.
+*/
+
+SELECT c.Name, cl.language 
+FROM country c 
+JOIN countrylanguage cl ON c.Code = cl.CountryCode 
+WHERE cl.IsOfficial = 'F' 
+AND cl.Percentage > (
+    SELECT AVG(cl2.Percentage) 
+    FROM countrylanguage cl2 
+    WHERE cl2.CountryCode = c.Code 
+    AND cl2.IsOfficial = 'T'
+);
+
+-- Ejercicio 8
+
+/*
+Listar la cantidad de habitantes por continente ordenado en forma descendente.
+*/
+
+

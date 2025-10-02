@@ -51,8 +51,7 @@ FROM (
 
 -- NOTE: Podemos utilizar una subconsulta donde se espera una expresión siempre que la consulta retorne una fila con una sola columna. Tales consultas se denominan CONSULTAS ESCALARES.
 
-SELECT d.dept_name,
-     (SELECT count(*)
+SELECT d.dept_name, (SELECT count(*)
       FROM instructor i
       WHERE d.dept_name =  i.dept_name
      ) AS num_instructors
@@ -69,3 +68,25 @@ WITH
  FROM department, max_budget
  WHERE department.budget = max_budget.value
 
+-- NOTE: funciones agregadas
+/*
+AVG, COUNT, MAX, MIN, SUM
+*/
+
+-- NOTE: agrupaciones
+SELECT select_expr
+FROM table_expr
+WHERE where_condition
+HAVING where_condition
+GROUP BY {col|alias|pos}
+ORDER BY order_expr
+
+-- NOTE: HAVING permite filtrar grupos sobre los valores agregados.
+-- WARNING: El predicado de HAVING se chequea luego de que los grupos son computados.
+-- WARNING: El predicado del WHERE se chequea antes de que los grupos sean computados.
+
+SELECT dept_name,
+        avg(salary) AS salary
+FROM instructor
+GROUP BY dept_name
+HAVING avg(salary) > 42000;
