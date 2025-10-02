@@ -131,3 +131,14 @@ SELECT co.ContinentName, (SELECT sum(Population)
 FROM continent co 
 GROUP BY co.ContinentName 
 ORDER BY pop desc;
+
+-- Ejercicio 9
+
+/*
+Listar el promedio de esperanza de vida (LifeExpectancy) por continente con una esperanza de vida entre 40 y 70 años.
+*/
+
+SELECT Continent, AVG(LifeExpectancy) AS avg_life 
+FROM country 
+GROUP BY Continent 
+HAVING AVG(LifeExpectancy) BETWEEN 40 AND 70;
