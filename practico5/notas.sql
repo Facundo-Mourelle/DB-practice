@@ -1,4 +1,64 @@
+-- Ejemplo procedimiento
+
+CREATE PROCEDURE dept_count_proc(in dept_name varchar(20),
+                                out d_count integer)
+    BEGIN
+        SELECT count(*) into d_count 
+        FROM instructor
+        WHERE instructor.dept_name = dept_count_proc.dept_name
+    END
+
+    DECLARE d_count integer;
+    CALL dept_count_proc(´Physics´, d_count);
+
+-- Ejemplo funcion
+
+CREATE FUNCTION registerStudent(
+    IN s_id varchar(5),
+    IN s_courseid varchar(8),
+    IN s_secid varchar(8),
+    IN s_semester varchar(6),
+    IN s_year numeric(4,0),
+    OUT errorMsg varchar(100)
+RETURNS integer)
+
+BEGIN
+    DECLARE currEnrol int;
+
+    SELECT count(*) INTO currEnrol
+    FROM takes
+    WHERE course_id = s_courseid
+        AND sec_id = s_secid;
+
+    DECLARE limit INT;
+
+    SELECT capacity INTO limit
+    FROM classroom 
+    NATURAL JOIN section
+    WHERE course_id = s_courseid 
+        AND semester = s_semester 
+        AND year = s_year;
+
+    IF (currEnrol < limit)
+        BEGIN
+            INSERT INTO takes 
+            VALUES (s_id, 
+                    s_courseid,
+                    s_secid,
+                    s_semester,
+                    s_year,
+                    null);
+            RETURN(0);
+        END
+    -- Otherwise, section capacity limit already reached
+    SET errorMsg = ´blablabla´ || s_courseid
+                                || ´section´
+                                || s_secid;
+    RETURN(-1);
+END;
+
 /*
+
 -- TODO: Proposito principal
 
 -- NOTE: Procedimientos almacenados
