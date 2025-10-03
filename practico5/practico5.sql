@@ -130,3 +130,101 @@ LIMIT 10;
 /*
 Modifique la table `inventory_id` agregando una columna `stock` que sea un número entero y representa la cantidad de copias de una misma película que tiene determinada tienda. El número por defecto debería ser 5 copias.
 */
+
+ALTER TABLE inventory 
+ADD stock int 
+DEFAULT 5;
+
+SELECT * FROM inventory LIMIT 5;
+
+-- Ejercicio 10
+
+/*
+Cree un trigger `update_stock` que, cada vez que se agregue un nuevo registro a la tabla rental, haga un update en la tabla `inventory` restando una copia al stock de la película rentada (Hint: revisar que el rental no tiene información directa sobre la tienda, sino sobre el cliente, que está asociado a una tienda en particular).
+*/
+
+DROP TRIGGER IF EXISTS update_stock;
+
+DELIMITER // 
+CREATE TRIGGER update_stock 
+AFTER INSERT ON rental 
+FOR EACH ROW 
+BEGIN 
+    UPDATE inventory 
+    SET stock = stock - 1 
+    WHERE NEW.inventory_id = inventory.inventory_id 
+    AND inventory.stock > 0; 
+END// 
+
+DELIMITER ;
+
+-- Ejercicio 11
+
+/*
+Cree una tabla `fines` que tenga dos campos: `rental_id` y `amount`. El primero es una clave foránea a la tabla rental y el segundo es un valor numérico con dos decimales.
+*/
+
+DROP TABLE IF EXISTS fines;
+
+CREATE TABLE IF NOT EXISTS fines(
+    rental_id int,
+    amount decimal(20, 2),
+    FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+);
+
+DESCRIBE fines;
+
+-- Ejercicio 12
+
+/*
+Cree un procedimiento `check_date_and_fine` que revise la tabla `rental` y cree un registro en la tabla `fines` por cada `rental` cuya devolución (return_date) haya tardado más de 3 días (comparación con rental_date). El valor de la multa será el número de días de retraso multiplicado por 1.5.
+*/
+
+DROP PROCEDURE IF EXISTS check_date_and_fine;
+
+DELIMITER // 
+
+CREATE PROCEDURE check_date_and_fine() 
+    BEGIN 
+        INSERT INTO fines (rental_id, amount) 
+        SELECT 
+            r.rental_id, 
+            DATEDIFF(r.return_date, DATE_ADD(r.rental_date, interval 3 day)) * 1.5 
+        FROM rental as r 
+        WHERE DATEDIFF(r.return_date, r.rental_date) > 3;
+    END// 
+
+DELIMITER ; 
+
+CALL check_date_and_fine();
+SELECT * FROM fines;
+
+-- Ejercicio 13
+
+/*
+Crear un rol `employee` que tenga acceso de inserción, eliminación y actualización a la tabla `rental`.
+*/
+
+CREATE ROLE employee;
+GRANT INSERT, UPDATE, DELETE 
+ON sakila.rental TO employee;
+
+-- Ejercicio 14
+
+/*
+Revocar el acceso de eliminación a `employee` y crear un rol `administrator` que tenga todos los privilegios sobre la BD `sakila`.
+*/
+
+REVOKE DELETE ON sakila.rental FROM employee;
+CREATE ROLE administrator;
+GRANT ALL privileges ON sakila.* TO administrator;
+
+-- Ejercicio 15
+
+/*
+Crear dos roles de empleado. A uno asignarle los permisos de `employee` y al otro de `administrator`.
+*/
+
+CREATE ROLE empleado1, empleado2;
+GRANT administrator TO empleado1;
+GRANT employee TO empleado2;

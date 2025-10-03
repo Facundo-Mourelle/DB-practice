@@ -111,16 +111,19 @@ después (AFTER) del evento del trigger
 
 -- Ejemplo trigger
 
+DELIMITER //
+
 CREATE TRIGGER trigger_name trigger_time trigger_event
 ON table_name FOR EACH ROW
 BEGIN
     [trigger_order]
     trigger_body
-END;
+END// 
     trigger_time: {BEFORE | AFTER}
     trigger_event: {INSERT | UPDATE | DELETE}
     trigger_order: {FOLLOWS| PRECEDES} other_trigger_name
 
+DELIMITER ;
 
 -- WARNING: Views
 
