@@ -86,9 +86,29 @@ db.movies.find(
 
 // ======================================================
 // EJERCICIO 3
-// Listar el nombre, email, texto y fecha de los comentarios que la película con id (movie_id) ObjectId("573a1399f29313caabcee886") recibió entre los años 2014 y 2016 inclusive. Listar ordenados por fecha. Escribir una nueva consulta (modificando la anterior) para responder ¿Cuántos comentarios recibió?
+// Listar el nombre, email, texto y fecha de los comentarios que la película con id (movie_id) ObjectId("573a1399f29313caabcee886") recibió entre los años 2014 y 2016 inclusive. Listar ordenados por fecha. 
 
+db.comments.find(
+    {
+        "movie_id": {$eq: ObjectId("573a1399f29313caabcee886")},
+        "date": {$gte: ISODate('2014-01-01'), $lt: ISODate('2017-01-01')}
+    },
+    {
+        name: 1, email: 1, text: 1, date: 1
+    }
+).sort({"date": 1})
 
+// Escribir una nueva consulta (modificando la anterior) para responder ¿Cuántos comentarios recibió?
+
+db.comments.find(
+    {
+        "movie_id": {$eq: ObjectId("573a1399f29313caabcee886")},
+        "date": {$gte: ISODate('2014-01-01'), $lt: ISODate('2017-01-01')}
+    },
+    {
+        _id: 0, movie_id: 0
+    }
+).count()
 
 // ======================================================
 // EJERCICIO 4
