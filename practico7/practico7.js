@@ -172,8 +172,21 @@ db.theaters.find(
 // EJERCICIO 7
 // Actualizar los valores de los campos texto (text) y fecha (date) del comentario cuyo id es ObjectId("5b72236520a3277c015b3b73") a "mi mejor comentario" y fecha actual respectivamente.
 
+db.comments.updateOne(
+    {
+        _id: ObjectId("5b72236520a3277c015b3b73")
+    },
+    {
+        $set: {text: "mi mejor comentario"},
+        $currentDate: {date: true}
+    }
+)
 
+// chequear que se efectuo bien
 
+db.comments.findOne(
+    {_id: ObjectId("5b72236520a3277c015b3b73")}
+)
 
 // ======================================================
 // EJERCICIO 8
