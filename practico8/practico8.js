@@ -36,7 +36,18 @@ db.theaters.aggregate([
 // EJERCICIO 3
 // Cantidad de películas dirigidas por "Louis Lumière". Se puede responder sin pipeline de agregación, realizar ambas queries.
 
-
+db.movies.aggregate([
+    {$unwind: "$directors"},
+    {$group: {
+        _id: "$directors",
+        total: {$count: {}}
+        }
+    },
+    {$match: {
+            _id: "Louis Lumière"
+        }
+    }
+])
 
 // EJERCICIO 4
 // Cantidad de películas estrenadas en los años 50 (desde 1950 hasta 1959). Se puede responder sin pipeline de agregación, realizar ambas queries.
