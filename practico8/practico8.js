@@ -64,6 +64,34 @@ db.movies.find(
 // EJERCICIO 4
 // Cantidad de películas estrenadas en los años 50 (desde 1950 hasta 1959). Se puede responder sin pipeline de agregación, realizar ambas queries.
 
+db.movies.aggregate([
+    {
+        $match: {
+            year: {$gte: 1950, $lte: 1959}
+        }
+    },
+    {
+        $group: {
+            _id: null,
+            total: {$count: {}}
+        }
+    },
+    {
+        // para ocultar el print de _id que queda feo
+        $project: {
+            _id: 0
+        }
+    }
+])
+
+db.movies.find(
+    {$and: [
+        {"year": {$gte: 1950}},
+        {"year": {$lte: 1959}},
+        ]
+    },
+    {_id: 0}
+).count()
 
 
 // EJERCICIO 5
