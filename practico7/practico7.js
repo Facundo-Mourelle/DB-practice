@@ -222,8 +222,15 @@ Resultados devueltos:
 // EJERCICIO 9
 // Remover todos los comentarios realizados por el usuario cuyo email es victor_patel@fakegmail.com durante el año 1980.
 
-
-
+db.comments.deleteMany(
+    {
+        email: "victor_patel@fakegmail.com",
+        date: {
+            $gte: ISODate("1980-01-01"),
+            $lt: ISODate("1990-01-01")
+        }
+    },
+)
 
 // ======================================================
 // ================    PARTE 2    =======================
