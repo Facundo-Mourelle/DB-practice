@@ -379,7 +379,7 @@ db.restaurants.aggregate([
     {
         $project: {
             _id: 0,
-            restaurant_id: "$_id",
+            restaurant_id: "_id",
             name: "$name",
             max: 1,
             min: 1,
@@ -390,7 +390,65 @@ db.restaurants.aggregate([
 
 // b) Resolver con expresiones sobre arreglos (por ejemplo, $sum) pero sin $group.
 
+db.restaurants.aggregate([
+    {
+        $project: {
+            _id: 0,
+            restaurant_id: "$_id",
+            name: "$name",
+            scores: {
+                $map: {
+                    input: "$grades",
+                    as: "grade",
+                    in: "$$grade.score"
+                }
+            }
+        }
+    },
+    {
+        $project: {
+            restaurant_id: 1,
+            name: 1,
+            max: {$max: "$scores"},
+            min: {$min: "$scores"},
+            sum: {$sum: "$scores"}
+            }
+    }
+])
+
 // c) Resolver como en el punto b) pero usar $reduce para calcular la puntuación total.
+
+db.restaurants.aggregate([
+    {
+        $project: {
+            _id: 0,
+            restaurant_id: "$_id",
+            name: "$name",
+            scores: {
+                $map: {
+                    input: "$grades",
+                    as: "grade",
+                    in: "$$grade.score"
+                }
+            }
+        }
+    },
+    {
+        $project: {
+            restaurant_id: 1,
+            name: 1,
+            max: {$max: "$scores"},
+            min: {$min: "$scores"},
+            sum: {
+                $reduce: {
+                    input: "$scores",
+                    initialValue: 0,
+                    in: {$add: ["$$value", "$$this"]}
+                }
+            },
+        }
+    }
+])
 
 // d) Resolver con find
 
