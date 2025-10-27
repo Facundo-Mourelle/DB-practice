@@ -1,4 +1,5 @@
 db.createCollection(name, <options>);
+db.<collection>.drop()
 
 // CRUD operations
 
@@ -8,11 +9,8 @@ db.<collection>.insertMany( [ <doc1>, … , <docN> ] )
 db.<collection>.findOne( <query filter>, <projection> )
 db.<collection>.find( <query filter>, <projection> )
 
-// inclusion
-db.<collection>.find( <query filter>, {<field>: 1} )
-
-// exclusion
-db.<collection>.find( <query filter>, {<field>: 0} )
+// inclusion     exclusion
+{<field>: 1}     {<field>: 0}
 
 // OPERADORES
 db.<collection>.find( 
@@ -21,14 +19,6 @@ db.<collection>.find(
 
 // operadores COMPARATIVOS
 // $eq  $nq  $gt  $gte  $lt  $lte  $in  $nin
-
-db.inventory.find(
-    { qty: { $lt: 30 } }
-)
-
-db.inventory.find( 
-    {$or: [ { status: "A"}, { qty: { $lt: 30 } } ] }
-)
 
 // operadores LOGICOS
 // $$and $or $not $nor
@@ -51,6 +41,8 @@ db.<collection>.find(
         <query filter>,
 		<projection>
 ).sort(
+    // -1 orden descendente
+    // 1 orden ascendente
     { <field1>: <1 or -1>, <field2>: <1 or -1> ... }
 ).skip(
     <offset>
@@ -58,12 +50,38 @@ db.<collection>.find(
 <number>
 )
 
+// matching
+{field: null}
+{field: {$type: <type>}}
+{field: {$exists: <false>/<true>}}
+
+
+// update-delete
 db.<collection>.updateOne( <query filter>, <update>, <options> )
 db.<collection>.updateMany( <query filter>, <update>, <options> )
 
 db.<collection>.deleteOne( <query filter>)
 db.<collection>.deleteMany( <query filter> )
 
-db.<collection>.drop()
+updateOne(
+    {item: ""},
+    {
+        $set: {field: <value>},
+        $currentDate: {field: true},
+            // tipo arreglo
+            $addToSet: {field: {$operator: ["item1", "item2"]}}
+            $push: {field: <value>},
+            // permiten usar $each
+            // en addToSet añade valores si no existe en el arreglo
+            // en push hace append
+
+    },
+    {
+        // Update + Insert
+        upsert: true
+    }
+)
+
+
 
 
