@@ -97,7 +97,31 @@ db.movies.find(
 // EJERCICIO 5
 // Listar los 10 géneros con mayor cantidad de películas (tener en cuenta que las películas pueden tener más de un género). Devolver el género y la cantidad de películas. Hint: unwind puede ser de utilidad
 
-
+db.movies.aggregate([
+    {
+        $unwind: "$genres"
+    },
+    {
+        $group: {
+            _id: "$genres",
+            total: { $count: {}}
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            genre: "$_id"
+        }
+    },
+    {
+        $sort: {
+            total: -1
+        }
+    },
+    {
+        $limit: 10
+    }
+])
 
 // EJERCICIO 6
 // Top 10 de usuarios con mayor cantidad de comentarios, mostrando Nombre, Email y Cantidad de Comentarios.
