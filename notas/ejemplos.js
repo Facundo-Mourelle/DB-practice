@@ -9,6 +9,18 @@ db.inventory.find(
 ).limit(3)
 
 
+
+// COUNT
+
+db.theaters.aggregate([
+    {$group: {
+        _id: "$location.address.state",
+        total: {$count: {}}
+        }
+    }
+])
+
+
 // UNWIND
 
 db.survey.aggregate( [

@@ -5,7 +5,11 @@
 // Cantidad de cines (theaters) por estado
 
 db.theaters.aggregate([
-
+    {$group: {
+        _id: "$location.address.state",
+        total: {$count: {}}
+        }
+    }
 ])
 
 // EJERCICIO 2
