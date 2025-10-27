@@ -452,6 +452,35 @@ db.restaurants.aggregate([
 
 // d) Resolver con find
 
+db.restaurants.find(
+    {},
+    {
+        _id: 1,
+        name: 1,
+        grades: 1
+    }
+).forEach(function(restaurant) {
+    // 1. Extraer el array de solo las puntuaciones numéricas (usando map de JS)
+    let scores = restaurant.grades.map(grade => grade.score);
+
+    // 2. Calcular la suma total (usando reduce de JS)
+    let sum = scores.reduce((total, score) => total + score, 0);
+
+    // 3. Calcular la puntuación máxima y mínima (usando Math.max/min de JS)
+    // Se usa el operador spread (...) para pasar los elementos del array como argumentos
+    let max = Math.max(...scores);
+    let min = Math.min(...scores);
+    
+    // 4. Imprimir el resultado deseado
+    printjson({
+        Restaurant_ID: restaurant._id,
+        Nombre: restaurant.name,
+        Puntuacion_Maxima: max,
+        Puntuacion_Minima: min,
+        Suma_Total: sum
+    });
+});
+
 // EJERCICIO 13
 // Actualizar los datos de los restaurantes añadiendo dos campos nuevos.
 // a) "average_score": con la puntuación promedio
