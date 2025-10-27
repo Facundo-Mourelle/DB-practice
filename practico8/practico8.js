@@ -126,7 +126,35 @@ db.movies.aggregate([
 // EJERCICIO 6
 // Top 10 de usuarios con mayor cantidad de comentarios, mostrando Nombre, Email y Cantidad de Comentarios.
 
+db.comments.aggregate([
+    {
+        $unwind: "$email"
+    },
+    {
+        $group: {
+            _id: "$email",
+            total: {$count: {}}
+        }
 
+    },
+    {
+        $project: {
+            _id: 0,
+            user: "$_id",
+            name: 1,
+            total: 1
+        }
+    },
+    {
+        $sort: {
+            total: -1
+        }
+    },
+    {
+        $limit: 10
+    }
+
+])
 
 // EJERCICIO 7
 // Ratings de IMDB promedio, mínimo y máximo por año de las películas estrenadas en los años 80 (desde 1980 hasta 1989), ordenados de mayor a menor por promedio del año.
