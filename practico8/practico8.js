@@ -191,7 +191,41 @@ db.movies.aggregate([
 // EJERCICIO 8
 // Título, año y cantidad de comentarios de las 10 películas con más comentarios.
 
-
+db.comments.aggregate([
+    {
+        $group: {
+            _id: "$movie_id",
+            total: {$count: {}}
+        }
+    },
+    {
+        $sort: {
+            total: -1
+        }
+    },
+    {
+        $limit: 10
+    },
+    {
+        $lookup: {
+            from: "movies",
+            localField: "_id",
+            foreignField: "_id",
+            as: "movie"
+        }
+    },
+    {
+        $unwind: "$movie"
+    },
+    {
+        $project: {
+            title: "$movie.title",
+            year: "$movie.year",
+            total: 1,
+            _id: 0
+        }
+    }
+])
 
 // EJERCICIO 9
 // Crear una vista con los 5 géneros con mayor cantidad de comentarios, junto con la cantidad de comentarios.
