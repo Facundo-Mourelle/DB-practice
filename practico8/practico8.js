@@ -4,6 +4,9 @@
 // EJERCICIO 1
 // Cantidad de cines (theaters) por estado
 
+db.theaters.aggregate([
+
+])
 
 // EJERCICIO 2
 // Cantidad de estados con al menos dos cines (theaters) registrados

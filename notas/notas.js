@@ -83,5 +83,60 @@ updateOne(
 )
 
 
+// ========================================================================
+// Agregaciones
+
+{operator: {arg}}
+{$operator: [{arg1}, {arg2}, ...]}
+
+// operadores / stages basicos
+$match | $project | $skip $limit $sort | $count $addFields
+
+$match {<query filter>}
+$project {<specifications>}
+    $project {
+        field: <expr>
+    }
+$count {field}
+$addFields {newfield: <aggr-expr>}
 
 
+{
+// stages complejos
+
+// Deconstruye un campo arreglo en el documento y crea documentos separados para cada elemento en el arreglo
+{$unwind: <field-path>}
+
+// Reemplaza el documento por un documento anidado especificado
+{$replaceRoot: {newRoot: <replacement>} }
+//
+// Agrupa los documentos por una expresión especificada y aplica las expresiones acumuladoras
+{$group: {
+    _id: <expr>,
+    <field>: {<accumulator>: <expr>},
+        // <accumulator> == $avg, $min, $max, etc
+    ...
+    }
+}
+// Realiza la unión de dos colecciones
+{$unionWith: {coll: <collection>, pipeline: [{<stage>}, {<stage>}, ...]}}
+
+// Almacena el resultado del pipeline en una colección
+{$out: {db: "<outDB>", coll: "<outColl>"}}
+
+}
+// Realiza un left join a otra colección
+{$lookup: {
+    from: <coll-to-join>,
+        localField: <field-from-the-input-docs>,
+        foreignField: <fielf-from-FromCollsDocs>,
+        //or
+        let: {<var>: <expr>, ... , <var>: <expr>},
+        pipeline: [<pipeline-to-run-joined-coll>],
+    as: <output-array-field>
+    }
+}
+
+
+// ============== Vistas ================
+db.createView("<name>", <"source">, [<pipeline>])
