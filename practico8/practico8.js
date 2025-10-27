@@ -49,6 +49,18 @@ db.movies.aggregate([
     }
 ])
 
+// sin agregacion
+
+db.movies.find(
+    {directors: {
+        $elemMatch: {
+            $eq: "Louis Lumière"
+            }
+        }
+    },
+    {_id: 1}
+).count()
+
 // EJERCICIO 4
 // Cantidad de películas estrenadas en los años 50 (desde 1950 hasta 1959). Se puede responder sin pipeline de agregación, realizar ambas queries.
 
