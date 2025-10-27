@@ -15,7 +15,23 @@ db.theaters.aggregate([
 // EJERCICIO 2
 // Cantidad de estados con al menos dos cines (theaters) registrados
 
-
+db.theaters.aggregate([
+    {$group: {
+        _id: "$location.address.state",
+        total: {$count: {}}
+        }
+    },
+    {$match: {
+        "total": {$gte: 2}
+        }
+    },
+    {
+        $group: {
+            _id: null,
+            states_with_more_than_2_theaters: {$count: {}}
+        }
+    }
+])
 
 // EJERCICIO 3
 // Cantidad de películas dirigidas por "Louis Lumière". Se puede responder sin pipeline de agregación, realizar ambas queries.
