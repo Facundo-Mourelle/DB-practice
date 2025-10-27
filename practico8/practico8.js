@@ -278,13 +278,86 @@ db.top_commented_genres.find()
 // Hint2: {'name.2': {$exists: true}} permite filtrar arrays con al menos 2 elementos, entender por qué.
 // Hint3: Puede que tu solución no use Hint1 ni Hint2 e igualmente sea correcta
 
+db.movies.aggregate([
+    {
+        $match: {
+            directors: {
+                $elemMatch: {
+                    $eq: "Jules Bass"
+                }
+            }
+        }
+    },
+    {
+        $unwind: "$cast"
+    },
+    {
+        $group: {
+            _id: "$cast",
+            movies: {
+                $addToSet: {
+                    title: "$title",
+                    year: "$year"
+                }
+            }
+        }
+    },
+    {
+        $match: {
+            "movies.2": { $exists: true }
+        }
+    },
+    {
+        $project: {
+            actor: "$_id",
+            movies: 1,
+            _id: 0
+        }
+    }
+])
 
+
+// Explicacion Hint 2: chequea si existe un segundo elemento en el arreglo movies. Filtra los actores con +2 peliculas
+//                      dirigidas por Jules Bass
 
 // EJERCICIO 11
 // Listar los usuarios que realizaron comentarios durante el mismo mes de lanzamiento de la película comentada, mostrando Nombre, Email, fecha del comentario, título de la película, fecha de lanzamiento.
 // HINT: usar $lookup con multiple condiciones
 
-
+db.comments.aggregate([
+    {
+        $lookup: {
+            from: "movies",
+            localField: "movie_id",
+            foreignField: "_id",
+            as: "movie_info"
+        }
+    },
+    {
+        $unwind: "$movie_info"
+    },
+    {
+        $match: {
+            $expr: {
+                $and: [
+                    { $eq: [{ $month: "$date" }, { $month: "$movie_info.released" }] },
+                    { $eq: [{ $year: "$date" }, { $year: "$movie_info.released" }] }
+                ]
+            }
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            user: "$name",
+            email: "$email",
+            movie_title: "$movie_info.title",
+            date_of_comment: "$date",
+            date_of_release: {
+                $ifNull: ["$movie_info.released", "$movie_info.year"]}
+        }
+    }
+])
 
 // EJERCICIO 12
 // Listar el id y nombre de los restaurantes junto con su puntuación máxima, mínima y la suma total. Se puede asumir que el restaurant_id es único.
