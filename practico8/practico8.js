@@ -230,7 +230,47 @@ db.comments.aggregate([
 // EJERCICIO 9
 // Crear una vista con los 5 géneros con mayor cantidad de comentarios, junto con la cantidad de comentarios.
 
+db.createView("top_commented_genres", "movies", [
+    {
+        $lookup: {
+            from: "comments",
+            localField: "_id",
+            foreignField: "movie_id",
+            as: "movie_comments"
+        }
+    },
+    {
+        $unwind: "$genres"
+    },
+    {
+        $group: {
+            _id: "$genres",
+            total: {
+                $sum: {
+                    $size: "$movie_comments"
+                }
+            }
+        }
+    },
+    {
+        $sort: {
+            total: -1
+        }
+    },
+    {
+        $limit: 5
+    },
+    {
+        $project: {
+            _id: 0,
+            genre: "$_id",
+            total: 1
+        }
+    }
+])
 
+
+db.top_commented_genres.find()
 
 // EJERCICIO 10
 // Listar los actores (cast) que trabajaron en 2 o más películas dirigidas por "Jules Bass". Devolver el nombre de estos actores junto con la lista de películas (solo título y año) dirigidas por “Jules Bass” en las que trabajaron. 
