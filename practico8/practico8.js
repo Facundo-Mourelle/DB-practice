@@ -485,12 +485,56 @@ db.restaurants.find(
 // Actualizar los datos de los restaurantes añadiendo dos campos nuevos.
 // a) "average_score": con la puntuación promedio
 
+db.restaurants.updateMany(
+    {},
+    [
+        {
+            $set: {
+                "average_score": {
+                    $avg: "$grades.score"
+                }
+            }
+        }
+    ]
+)
+
+db.restaurants.find(
+    { "rating": { $exists: true } },
+    { name: 1, grades: 1, average_score: 1, rating: 1}
+).limit(5)
+
 // b) "grade": (con 1 sola query)
 /*
   con "A" si "average_score" está entre 0 y 13, 
   con "B" si "average_score" está entre 14 y 27 
   con "C" si "average_score" es mayor o igual a 28 
 */
+
+db.restaurants.updateMany(
+    {},
+    [
+        {
+            $set: {
+                "rating": {
+                    $switch: {
+                        branches: [
+                            {
+                                case: {$lte: ["$average_score", 13]},
+                                then: "A"
+                            },
+                            {
+                                case: {$lte: ["$average_score", 27]},
+                                then: "B"
+
+                            },
+                        ],
+                        default: "C"
+                    }
+                }
+            }
+        }
+    ]
+)
 
 // HINT1. Se puede usar pipeline de agregación con la operación update
 // HINT2. El operador $switch o $cond pueden ser de ayuda.
