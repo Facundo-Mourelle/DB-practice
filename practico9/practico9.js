@@ -4,7 +4,19 @@
 // Especificar en la colección users las siguientes reglas de validación: El campo name (requerido) debe ser un string con un máximo de 30 caracteres, email (requerido) debe ser un string que matchee con la expresión regular, password (requerido) debe ser un string con al menos 50 caracteres.
 // "^(.*)@(.*)\\.(.{2,4})$"
 
-
+db.runCommand({
+    collMod: "users",
+    validator: {
+        $jsonSchema: {
+            required: ["name", "email", "password"],
+            properties: {
+                name: { bsonType: "string", maxLength: 30 },
+                email: { bsonType: "string", pattern: "^(.*)@(.*)\\.(.{2,4})$" },
+                password: { bsonType: "string", minLength: 50 }
+            }
+        }
+    }
+})
 
 // EJERCICIO 2
 // Obtener metadata de la colección users que garantice que las reglas de validación fueron correctamente aplicadas.
