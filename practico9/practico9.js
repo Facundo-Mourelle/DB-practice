@@ -21,7 +21,7 @@ db.runCommand({
 // EJERCICIO 2
 // Obtener metadata de la colección users que garantice que las reglas de validación fueron correctamente aplicadas.
 
-db.getCollectionInfos({ name: "users"})
+db.getCollectionInfos({ name: "users" })
 
 // EJERCICIO 3
 // Especificar en la colección theaters las siguientes reglas de validación: El campo theaterId (requerido) debe ser un int y location (requerido) debe ser un object con:
@@ -45,10 +45,10 @@ db.runCommand({
                             bsonType: "object",
                             required: ["street1", "city", "state", "zipcode"],
                             properties: {
-                                street1: {bsonType: "string"},
-                                city: {bsonType: "string"},
-                                state: {bsonType: "string"},
-                                zipcode: {bsonType: "string"},
+                                street1: { bsonType: "string" },
+                                city: { bsonType: "string" },
+                                state: { bsonType: "string" },
+                                zipcode: { bsonType: "string" },
                             }
                         },
                         geo: {
@@ -80,12 +80,21 @@ db.runCommand({
 // Hint: Usar el constructor NumberInt() para especificar valores enteros a la hora de insertar documentos. Recordar que mongo shell es un intérprete javascript y en javascript los literales numéricos son de tipo Number (double).
 
 db.runCommand({
-    collMod: "",
+    collMod: "movies",
     validator: {
         $jsonSchema: {
-            required: [],
+            required: ["title", "year"],
             properties: {
-                
+                title: { bsonType: "string" },
+                year: {
+                    bsonType: "int",
+                    minimum: 1900,
+                    maximum: 3000
+                },
+                cast: { bsonType: "array", uniqueItems: true },
+                directors: { bsonType: "array", uniqueItems: true },
+                countries: { bsonType: "array", uniqueItems: true },
+                genres: { bsonType: "array", uniqueItems: true }
             }
         }
     }
@@ -94,7 +103,6 @@ db.runCommand({
 
 // EJERCICIO 5
 // Crear una colección userProfiles con las siguientes reglas de validación: Tenga un campo user_id (requerido) de tipo “objectId”, un campo language (requerido) con alguno de los siguientes valores [ “English”, “Spanish”, “Portuguese” ] y un campo favorite_genres (no requerido) que sea un array de strings sin duplicados.
-
 
 
 
