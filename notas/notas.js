@@ -140,3 +140,38 @@ $addFields {newfield: <aggr-expr>}
 
 // ============== Vistas ================
 db.createView("<name>", <"source">, [<pipeline>])
+
+
+// ============== Modelado ================
+
+anidados:
+{
+    <document-fields>
+    <field>: [
+        <field-1>,
+        <field-2>
+    ]
+}
+
+referencias:
+{
+    _id: <X-id>
+    <doc-fields>
+}
+{
+    _id: <Y-id>,
+    <ref_id>: <X-id>
+}
+
+// PRINCIPIO: datos que se acceden juntos se deben almacenar juntos
+
+// embedding: 
+// + ) 1 query para recuperar datos
+// + ) 1 operacion para Update/Delete
+// - ) datos duplicados
+// - ) documentos grandes
+
+// referencing:
+// + ) puede evitar duplicados de datos
+// + ) documentos mas pequeños
+// - ) requiere JOIN a nivel de aplicacion
