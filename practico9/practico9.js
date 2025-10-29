@@ -132,7 +132,14 @@ db.createCollection("userProfiles", {
 // EJERCICIO 6
 // Identificar los distintos tipos de relaciones (One-To-One, One-To-Many) en las colecciones movies y comments. Determinar si se usó documentos anidados o referencias en cada relación y justificar la razón.
 
+/*
+En comments existe la referencia "movie_id" hacia movie
+=> relacion  movie  1 -- *  comments
 
+Esta decision se debe a la baja prioridad que se tiene de los comentarios con respecto a las peliculas
+Es mas importante mantener cierta estabilidad en los documentos de las peliculas, por lo que incluir los campos
+anidados de los comentarios puede afectar el rendimiento a la hora de acceder a cada pelicula
+*/
 
 
 // EJERCICIO 7
