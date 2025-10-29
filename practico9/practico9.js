@@ -105,6 +105,28 @@ db.runCommand({
 // Crear una colección userProfiles con las siguientes reglas de validación: Tenga un campo user_id (requerido) de tipo “objectId”, un campo language (requerido) con alguno de los siguientes valores [ “English”, “Spanish”, “Portuguese” ] y un campo favorite_genres (no requerido) que sea un array de strings sin duplicados.
 
 
+db.createCollection("userProfiles", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["user_id", "language"],
+            properties: {
+                user_id: { bsonType: "objectId" },
+                language: {
+                    bsonType: "string",
+                    enum: ["English", "Spanish", "Portuguese"]
+                },
+                favorite_genres: {
+                    bsonType: "array",
+                    items: {
+                        bsonType: "string"
+                    },
+                    uniqueItems: true
+                }
+            }
+        }
+    }
+})
 
 
 // EJERCICIO 6
