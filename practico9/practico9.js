@@ -152,8 +152,206 @@ anidados de los comentarios puede afectar el rendimiento a la hora de acceder a 
 // c) Listar el nombre y dirección entrega y el monto total (quantity * price) de sus pedidos para un order_id dado
 
 
+db.createCollection("orders", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["order_id", "delivery_name", "delivery_address", "cc_name", "cc_address", "cc_expiry"],
+            properties: {
+                order_id: { bsonType: "long" },
+                delivery_name: { bsonType: "string", maxLength: 70 },
+                delivery_address: { bsonType: "string", maxLength: 70 },
+                cc_name: { bsonType: "string", maxLength: 32 },
+                cc_expiry: { bsonType: "string", maxLength: 20 }
+            }
+        }
+    }
+})
 
 
+db.createCollection("books", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["book_id", "title", "author", "price"],
+            properties: {
+                book_id: { bsonType: "int" },
+                title: { bsonType: "string", maxLength: 70 },
+                author: { bsonType: "string", maxLength: 70 },
+                categories: {
+                    bsonType: "array",
+                    items: {
+                        bsonType: "string",
+                        maxLength: 70
+                    },
+                },
+                price: { bsonType: "double" }
+            }
+        }
+    }
+})
+
+
+db.createCollection("order_details", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["book_id", "order_id", "quantity", "price"],
+            properties: {
+                book_id: { bsonType: "int" },
+                order_id: { bsonType: "long" },
+                quantity: { bsonType: "int" },
+                price: { bsonType: "double" }
+            }
+        }
+    }
+})
+
+// no necesario para este caso de uso particular
+/*
+db.shop.createCollection("categories", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["category_id", "category_name"],
+            properties: {
+                category_id: { bsonType: "int" },
+                category_name: { bsonType: "string", maxLength: 70 }
+            }
+        }
+    }
+})
+*/
+
+
+db.books.insertMany([
+    {
+        "book_id": 1,
+        "title": "Cien años de soledad",
+        "author": "Gabriel García Márquez",
+        "categories": ["Ficción", "Realismo Mágico", "Novela"],
+        "price": 15.99
+    },
+    {
+        "book_id": 2,
+        "title": "1984",
+        "author": "George Orwell",
+        "categories": ["Distopía", "Ciencia Ficción"],
+        "price": 12.50
+    },
+    {
+        "book_id": 3,
+        "title": "El Gran Gatsby",
+        "author": "F. Scott Fitzgerald",
+        "price": 9.99
+        /* El campo "categories" es opcional y se omite aquí. */
+    },
+    {
+        "book_id": 4,
+        "title": "Sapiens: De animales a dioses",
+        "author": "Yuval Noah Harari",
+        "categories": ["No Ficción", "Historia", "Filosofía"],
+        "price": 25.75
+    },
+    {
+        "book_id": 5,
+        "title": "El Principito",
+        "author": "Antoine de Saint-Exupéry",
+        "categories": ["Infantil", "Ficción"],
+        "price": 7.99
+    }
+])
+
+db.orders.insertMany([
+    {
+        "order_id": NumberLong(1000000001),
+        "delivery_name": "Ana García López",
+        "delivery_address": "Calle Falsa 123, Madrid, 28001",
+        "cc_name": "ANA G L",
+        "cc_address": "Calle Falsa 123, Madrid, 28001",
+        "cc_expiry": "12/28"
+    },
+    {
+        "order_id": NumberLong(1000000002),
+        "delivery_name": "Javier Ruiz Sanz",
+        "delivery_address": "Av. Diagonal 456, Barcelona, 08008",
+        "cc_name": "JAVIER R SANZ",
+        "cc_address": "Av. Diagonal 456, Barcelona, 08008",
+        "cc_expiry": "05/26"
+    }
+])
+
+
+db.order_details.insertMany([
+    {
+        "book_id": 1,
+        "order_id": NumberLong(1000000001),
+        "quantity": 1,
+        "price": 15.99
+    },
+    {
+        "book_id": 4,
+        "order_id": NumberLong(1000000001),
+        "quantity": 2,
+        "price": 25.75
+    }
+])
+
+
+db.books.find(
+    { author: "George Orwell" },
+    { _id: 1, title: 1, categories: 1, price: 1 }
+)
+
+db.books.aggregate([
+    { $unwind: "$categories" },
+    {
+        $group: {
+            _id: "$categories",
+            total: { $count: {} }
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            category: "$_id",
+            total: 1
+        }
+    }
+])
+
+db.orders.aggregate([
+    {
+        $lookup: {
+            from: "order_details",
+            localField: "order_id",
+            foreignField: "order_id",
+            as: "details"
+        }
+    },
+    { $unwind: "$details" },
+    {
+        $group: {
+            _id: "$order_id",
+            delivery_name: { $first: "$delivery_name" },
+            delivery_address: { $first: "$delivery_address" },
+            cost: {
+                $sum: {
+                    $multiply: ["$details.quantity", "$details.price"]
+                }
+            }
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            order_id: "$_id",
+            delivery_name: 1,
+            delivery_address: 1,
+            cost: 1
+        }
+    }
+])
 
 // EJERCICIO 8
 // Dado el diagrama que representa los datos de un blog de artículos, se pide
