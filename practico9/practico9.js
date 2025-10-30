@@ -363,3 +363,201 @@ db.orders.aggregate([
 // 3) Listar nombre y email dado un id de usuario
 // Inserte algunos documentos para las colecciones del modelo de datos. Opcionalmente puede especificar una regla de validación de esquemas  para las colecciones.
 
+
+db.createCollection("Articles", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["user_id", "title", "date", "text", "url"],
+            properties: {
+                user_id: { bsonType: "objectId" },
+                title: { bsonType: "string" },
+                date: { bsonType: "date" },
+                text: { bsonType: "string" },
+                url: { bsonType: "string" },
+                categories: {
+                    bsonType: "array",
+                    items: {
+                        bsonType: "string"
+                    }
+                },
+                tags: {
+                    bsonType: "array",
+                    items: {
+                        bsonType: "string"
+                    }
+                }
+            }
+        }
+    }
+})
+
+db.createCollection("Users", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["name", "email"],
+            properties: {
+                name: { bsonType: "string" },
+                email: { bsonType: "string" }
+            }
+        }
+    }
+})
+
+db.createCollection("Comments", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["user_id", "article_id", "date", "text"],
+            properties: {
+                user_id: { bsonType: "objectId" },
+                article_id: { bsonType: "objectId" },
+                date: { bsonType: "date" },
+                text: { bsonType: "string" }
+            }
+        }
+    }
+})
+
+
+
+db.Users.insertMany([
+    {
+        name: "Ana García",
+        email: "ana.garcia@example.com"
+    },
+    {
+        name: "Carlos Ruiz",
+        email: "carlos.ruiz@example.com"
+    },
+    {
+        name: "Elena Pérez",
+        email: "elena.perez@example.com"
+    }
+])
+
+db.Articles.insertMany([
+    {
+        user_id: ObjectId('6903d016d7e3ae4ba9ce5f51'), // Corresponde a 'Ana García' (simulado)
+        title: "Introducción a MongoDB: Base de Datos NoSQL",
+        date: new ISODate("2025-10-15T10:00:00Z"),
+        text: "MongoDB es un sistema de base de datos de código abierto orientado a documentos...",
+        url: "http://example.com/articulos/mongodb-intro",
+        categories: ["Tecnología", "Bases de Datos"],
+        tags: ["mongodb", "nosql", "tutorial"]
+    },
+    {
+        user_id: ObjectId('6903d016d7e3ae4ba9ce5f52'), // Corresponde a 'Carlos Ruiz' (simulado)
+        title: "El Impacto de la Inteligencia Artificial en el Diseño Web",
+        date: new ISODate("2025-10-20T14:30:00Z"),
+        text: "La IA está revolucionando la forma en que interactuamos con las páginas web...",
+        url: "http://example.com/articulos/ia-diseno-web",
+        categories: ["Inteligencia Artificial", "Diseño"],
+        tags: ["ia", "web", "futuro"]
+    },
+    {
+        user_id: ObjectId('6903d016d7e3ae4ba9ce5f53'), // Corresponde a 'Elena Pérez' (simulado)
+        title: "Receta Rápida: Tacos de Pescado al Pastor",
+        date: new ISODate("2025-10-28T09:15:00Z"),
+        text: "Una deliciosa y sencilla receta para una cena rápida...",
+        url: "http://example.com/articulos/receta-tacos",
+        categories: ["Gastronomía"],
+        tags: ["recetas", "comida", "mexicana"]
+    }
+])
+
+
+db.Comments.insertMany([
+    {
+        user_id: ObjectId('6903d016d7e3ae4ba9ce5f52'), // Carlos Ruiz
+        article_id: ObjectId('6903d059d7e3ae4ba9ce5f54'), // Artículo de MongoDB
+        date: new ISODate("2025-10-16T11:20:00Z"),
+        text: "¡Excelente introducción! ¿Podrías hablar más sobre las agregaciones?"
+    },
+    {
+        user_id: ObjectId('6903d016d7e3ae4ba9ce5f53'), // Elena Pérez
+        article_id: ObjectId('6903d059d7e3ae4ba9ce5f54'), // Artículo de MongoDB
+        date: new ISODate("2025-10-16T15:05:00Z"),
+        text: "Muy útil para principiantes. Gracias."
+    },
+    {
+        user_id: ObjectId('6903d016d7e3ae4ba9ce5f51'), // Ana García
+        article_id: ObjectId('6903d059d7e3ae4ba9ce5f56'), // Artículo de Tacos
+        date: new ISODate("2025-10-29T10:00:00Z"),
+        text: "¡Hice la receta y fue un éxito! Delicioso y fácil."
+    },
+    {
+        user_id: ObjectId('6903d016d7e3ae4ba9ce5f52'), // Carlos Ruiz
+        article_id: ObjectId('6903d059d7e3ae4ba9ce5f55'), // Artículo de Tacos
+        date: new ISODate("2023-05-29T10:00:00Z"),
+        text: "¡Hice la receta y fue un éxito! Delicioso y fácil."
+    },
+    {
+        user_id: ObjectId('6903d016d7e3ae4ba9ce5f52'), // Carlos Ruiz
+        article_id: ObjectId('6903d059d7e3ae4ba9ce5f55'), // Artículo de Tacos
+        date: new ISODate("2024-09-29T10:00:00Z"),
+        text: "Siempre vuelvo a este articulo porque me olvido"
+    }
+
+])
+
+
+// 1) Listar título y url, tags y categorías de los artículos dado un user_id
+
+db.Articles.find(
+    { "user_id": { $eq: ObjectId('6903d016d7e3ae4ba9ce5f51') } },
+    { _id: 0, title: 1, url: 1, tags: 1, categories: 1 }
+)
+
+// 2) Listar título, url y comentarios que se realizaron en un rango de fechas.
+
+db.Comments.aggregate(
+    {
+        $match: {
+            $expr: {
+                $and: [
+                    { $gte: [{ $year: "$date" }, 2022] },
+                    { $lte: [{ $year: "$date" }, 2024] }
+                ]
+            }
+        }
+    },
+    {
+        $group: {
+            _id: "$article_id",
+            comments: {
+                $push: {
+                    user_id: "$user_id",
+                    date: "$date",
+                    text: "$text"
+                }
+            }
+        }
+    },
+    {
+        $lookup: {
+            from: "Articles",
+            localField: "_id",
+            foreignField: "_id",
+            as: "article_details"
+        }
+    },
+    { $unwind: "$article_details" },
+    {
+        $project: {
+            _id: 0,
+            title: "$article_details.title",
+            url: "$article_details.url",
+            comments_count: { $size: "$comments" },
+            comments: "$comments"
+        }
+    }
+)
+
+// 3) Listar nombre y email dado un id de usuario
+
+db.Users.find(
+    { "_id": ObjectId('6903d016d7e3ae4ba9ce5f51') },
+    { _id: 0, name: 1, email: 1 }
+)
