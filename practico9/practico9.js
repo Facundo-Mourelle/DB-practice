@@ -34,6 +34,7 @@ db.runCommand({
     collMod: "theaters",
     validator: {
         $jsonSchema: {
+            bsonType: "object",
             required: ["theaterId", "location"],
             properties: {
                 theaterId: { bsonType: "int" },
@@ -91,10 +92,26 @@ db.runCommand({
                     minimum: 1900,
                     maximum: 3000
                 },
-                cast: { bsonType: "array", uniqueItems: true },
-                directors: { bsonType: "array", uniqueItems: true },
-                countries: { bsonType: "array", uniqueItems: true },
-                genres: { bsonType: "array", uniqueItems: true }
+                cast: {
+                    bsonType: "array",
+                    uniqueItems: true,
+                    items: { bsonType: "string" }
+                },
+                directors: {
+                    bsonType: "array",
+                    uniqueItems: true,
+                    items: { bsonType: "string" }
+                },
+                countries: {
+                    bsonType: "array",
+                    uniqueItems: true,
+                    items: { bsonType: "string" }
+                },
+                genres: {
+                    bsonType: "array",
+                    uniqueItems: true,
+                    items: { bsonType: "string" }
+                }
             }
         }
     }
@@ -113,7 +130,6 @@ db.createCollection("userProfiles", {
             properties: {
                 user_id: { bsonType: "objectId" },
                 language: {
-                    bsonType: "string",
                     enum: ["English", "Spanish", "Portuguese"]
                 },
                 favorite_genres: {
