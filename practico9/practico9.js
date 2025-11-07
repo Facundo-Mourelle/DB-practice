@@ -352,6 +352,7 @@ db.orders.aggregate([
             delivery_name: { $first: "$delivery_name" },
             delivery_address: { $first: "$delivery_address" },
             cost: {
+                // MULTIPLY NO ACUMULA => usamos SUM
                 $sum: {
                     $multiply: ["$details.quantity", "$details.price"]
                 }
