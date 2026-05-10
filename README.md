@@ -5,7 +5,7 @@ Este repo no tiene ni pies ni cabeza.
 Solo mucho tiempo invertido con la esperanza
 de aprobar la materia.
 
-Podria seguir buenas practicas de git? Si
+Podria seguir buenas practicas de git? Si...
 Lo voy a hacer? ¬_¬ ne
 
 Woosh, begone human, magic is at work.
